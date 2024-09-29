@@ -1,0 +1,18 @@
+---
+title: "My Travel Diary"
+format: 
+  html:
+    toc: true  # Enable table of contents for HTML
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true  # Include resources directly in the HTML output
+    css: styles.css  # Link to a custom CSS file
+execute:
+  output: utf-8  # Setze die Ausgabe explizit auf UTF-8
+---
+**Date**: 2024-09-29
+
+# ßäüäüä
+
+äüäüäüß
+

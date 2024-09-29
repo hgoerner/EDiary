@@ -1,9 +1,8 @@
-# src/pydiary/gui.py
-
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, ttk
 from pydiary.pydiary import Entry, PictureEntry, VideoEntry, MapEntry
 import os
+from pydiary.utils import has_header, add_qmd_header
 
 
 class DiaryApp:
@@ -12,11 +11,12 @@ class DiaryApp:
         self.root.title("Travel Diary")
 
         # Initialize variables
+        self.entries = []  # Store entries
         self.image_path = None
         self.video_path = None
-        self.lat = None
-        self.lon = None
-        self.location_name = None
+        self.gpx_file = None
+        self.image_alignment = tk.StringVar(value="left")  # Default value is left
+        self.qmd_file = "first_diary.qmd"
 
         # Title Label and Entry
         self.title_label = tk.Label(root, text="Title:")
@@ -42,79 +42,168 @@ class DiaryApp:
         self.add_video_button = tk.Button(self.buttons_frame, text="Add Video", command=self.add_video)
         self.add_video_button.grid(row=0, column=1, padx=5)
 
-        # Add Map Data Button
-        self.add_map_button = tk.Button(self.buttons_frame, text="Add Map Data", command=self.add_map_data)
+        # Add GPX Map Data Button
+        self.add_map_button = tk.Button(self.buttons_frame, text="Add GPX Map", command=self.add_gpx_data)
         self.add_map_button.grid(row=0, column=2, padx=5)
+
+        # Alignment Selection (Radio Buttons for Left/Right)
+        self.align_label = tk.Label(root, text="Image Alignment:")
+        self.align_label.pack(pady=5)
+
+        # Radio buttons for alignment (left or right)
+        self.left_align_radio = tk.Radiobutton(root, text="Left", variable=self.image_alignment, value="left")
+        self.left_align_radio.pack(pady=5, anchor="w")
+        self.right_align_radio = tk.Radiobutton(root, text="Right", variable=self.image_alignment, value="right")
+        self.right_align_radio.pack(pady=5, anchor="w")
 
         # Save Button
         self.save_button = tk.Button(root, text="Save Entry", command=self.save_entry)
         self.save_button.pack(pady=20)
 
+        # Dropdown for selecting an entry
+        self.entry_selection_label = tk.Label(root, text="Select an Entry:")
+        self.entry_selection_label.pack(pady=5)
+
+        self.entry_selection = ttk.Combobox(root, values=self.get_entry_titles())
+        self.entry_selection.pack(pady=5)
+
+        # Edit and Delete Buttons
+        self.edit_button = tk.Button(root, text="Edit Entry", command=self.edit_entry)
+        self.edit_button.pack(pady=5)
+        self.delete_button = tk.Button(root, text="Delete Entry", command=self.delete_entry)
+        self.delete_button.pack(pady=5)
+
     def add_picture(self):
-        if file_path := filedialog.askopenfilename(
+        file_path = filedialog.askopenfilename(
             title="Select Picture",
             filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp")],
-        ):
+        )
+        if file_path:
             self.image_path = file_path
             messagebox.showinfo("Picture Selected", f"Picture selected: {os.path.basename(file_path)}")
 
     def add_video(self):
-        if file_path := filedialog.askopenfilename(
+        file_path = filedialog.askopenfilename(
             title="Select Video",
             filetypes=[("Video Files", "*.mp4;*.avi;*.mov;*.mkv")],
-        ):
+        )
+        if file_path:
             self.video_path = file_path
             messagebox.showinfo("Video Selected", f"Video selected: {os.path.basename(file_path)}")
 
-    def add_map_data(self):
-        # Create a new window to input map data
-        map_window = tk.Toplevel(self.root)
-        map_window.title("Add Map Data")
-
-        lat_entry = self._extracted_from_add_map_data(map_window, "Latitude:")
-        lon_entry = self._extracted_from_add_map_data(map_window, "Longitude:")
-        loc_entry = self._extracted_from_add_map_data(map_window, "Location Name:")
-        # Submit Button
-        submit_button = tk.Button(
-            map_window, text="Add Map Data", command=lambda: self.save_map_data(map_window, lat_entry, lon_entry, loc_entry)
+    def add_gpx_data(self):
+        file_path = filedialog.askopenfilename(
+            title="Select GPX File",
+            filetypes=[("GPX Files", "*.gpx")],
         )
-        submit_button.pack(pady=10)
+        if file_path:
+            self.gpx_file = file_path
+            messagebox.showinfo("GPX File Selected", f"GPX file selected: {os.path.basename(file_path)}")
 
-    # TODO Rename this here and in `add_map_data`
-    def _extracted_from_add_map_data(self, map_window, text):
-        # Latitude Entry
-        lat_label = tk.Label(map_window, text=text)
-        lat_label.pack(pady=5)
-        result = tk.Entry(map_window, width=30)
-        result.pack(pady=5)
-
-        return result
-
-    def save_map_data(self, map_window, lat_entry, lon_entry, loc_entry):
-        try:
-            self.lat = float(lat_entry.get())
-            self.lon = float(lon_entry.get())
-            self.location_name = loc_entry.get()
-
-            if not self.location_name:
-                messagebox.showerror("Error", "Location name is required.")
-                return
-
-            messagebox.showinfo("Map Data Added", f"Map data for {self.location_name} added.")
-            map_window.destroy()
-        except ValueError:
-            messagebox.showerror("Error", "Invalid latitude or longitude. Please enter valid numbers.")
+    def get_entry_titles(self):
+        # Read entries from the QMD file and return a list of entry titles
+        if os.path.exists(self.qmd_file):
+            titles = []
+            with open(self.qmd_file, "r") as f:
+                for line in f:
+                    if line.startswith("# "):  # Assuming each entry starts with '# Title'
+                        titles.append(line.strip()[2:])  # Strip off the '# ' part
+            return titles
+        return []
 
     def save_entry(self):
         # Get the values from the GUI fields
         title = self.title_entry.get()
         content = self.content_text.get("1.0", tk.END).strip()
+        alignment = self.image_alignment.get()
 
-        # Validation
         if not title or not content:
             messagebox.showerror("Error", "Both title and content are required!")
+            return
 
-    # Main GUI loop function
+        # Check if the QMD file exists and add the header if it's missing
+        if not os.path.exists(self.qmd_file) or not has_header(self.qmd_file):
+            add_qmd_header(self.qmd_file)
+
+        entry = None
+        if self.image_path:
+            entry = PictureEntry(title, content, self.image_path, align=alignment)
+        elif self.video_path:
+            entry = VideoEntry(title, content, self.video_path)
+        elif self.gpx_file:
+            entry = MapEntry(title, content, self.gpx_file)
+        else:
+            entry = Entry(title, content)
+
+        entry.save(self.qmd_file)
+
+        # Update the dropdown with new entry
+        self.entry_selection["values"] = self.get_entry_titles()
+
+        # Clear fields
+        self.title_entry.delete(0, tk.END)
+        self.content_text.delete("1.0", tk.END)
+        self.image_path = None
+        self.video_path = None
+        self.gpx_file = None
+
+        messagebox.showinfo("Success", f"Entry '{title}' saved successfully!")
+
+    def delete_entry(self):
+        selected_entry = self.entry_selection.get()
+        if not selected_entry:
+            messagebox.showerror("Error", "No entry selected!")
+            return
+
+        # Read and rewrite QMD file without the selected entry
+        new_content = []
+        with open(self.qmd_file, "r", encoding="utf-8") as f:
+            skip = False
+            for line in f:
+                if line.startswith(f"# {selected_entry}"):
+                    skip = True
+                elif skip and line.startswith("# "):
+                    skip = False
+                if not skip:
+                    new_content.append(line)
+
+        with open(self.qmd_file, "w") as f:
+            f.writelines(new_content)
+
+        # Update the dropdown
+        self.entry_selection["values"] = self.get_entry_titles()
+
+        messagebox.showinfo("Success", f"Entry '{selected_entry}' deleted successfully!")
+
+    def edit_entry(self):
+        selected_entry = self.entry_selection.get()
+        if not selected_entry:
+            messagebox.showerror("Error", "No entry selected!")
+            return
+
+        # Load the selected entry's content into the GUI fields for editing
+        entry_found = False
+        with open(self.qmd_file, "r", encoding="utf-8") as f:
+            content = []
+            for line in f:
+                if line.startswith(f"# {selected_entry}"):
+                    entry_found = True
+                    continue
+                elif entry_found and line.startswith("# "):
+                    break
+                if entry_found:
+                    content.append(line)
+
+        if entry_found:
+            self.title_entry.delete(0, tk.END)
+            self.title_entry.insert(0, selected_entry)
+
+            self.content_text.delete("1.0", tk.END)
+            self.content_text.insert("1.0", "".join(content))
+        else:
+            messagebox.showerror("Error", f"Entry '{selected_entry}' not found!")
+
+    # Main GUI
 
 
 def run_gui():
