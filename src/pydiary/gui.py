@@ -51,16 +51,18 @@ class DiaryApp:
         self.save_button.pack(pady=20)
 
     def add_picture(self):
-        # Open file dialog to select an image
-        file_path = filedialog.askopenfilename(title="Select Picture", filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp")])
-        if file_path:
+        if file_path := filedialog.askopenfilename(
+            title="Select Picture",
+            filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp")],
+        ):
             self.image_path = file_path
             messagebox.showinfo("Picture Selected", f"Picture selected: {os.path.basename(file_path)}")
 
     def add_video(self):
-        # Open file dialog to select a video
-        file_path = filedialog.askopenfilename(title="Select Video", filetypes=[("Video Files", "*.mp4;*.avi;*.mov;*.mkv")])
-        if file_path:
+        if file_path := filedialog.askopenfilename(
+            title="Select Video",
+            filetypes=[("Video Files", "*.mp4;*.avi;*.mov;*.mkv")],
+        ):
             self.video_path = file_path
             messagebox.showinfo("Video Selected", f"Video selected: {os.path.basename(file_path)}")
 
@@ -69,29 +71,24 @@ class DiaryApp:
         map_window = tk.Toplevel(self.root)
         map_window.title("Add Map Data")
 
-        # Latitude Entry
-        lat_label = tk.Label(map_window, text="Latitude:")
-        lat_label.pack(pady=5)
-        lat_entry = tk.Entry(map_window, width=30)
-        lat_entry.pack(pady=5)
-
-        # Longitude Entry
-        lon_label = tk.Label(map_window, text="Longitude:")
-        lon_label.pack(pady=5)
-        lon_entry = tk.Entry(map_window, width=30)
-        lon_entry.pack(pady=5)
-
-        # Location Name Entry
-        loc_label = tk.Label(map_window, text="Location Name:")
-        loc_label.pack(pady=5)
-        loc_entry = tk.Entry(map_window, width=30)
-        loc_entry.pack(pady=5)
-
+        lat_entry = self._extracted_from_add_map_data_7(map_window, "Latitude:")
+        lon_entry = self._extracted_from_add_map_data_7(map_window, "Longitude:")
+        loc_entry = self._extracted_from_add_map_data_7(map_window, "Location Name:")
         # Submit Button
         submit_button = tk.Button(
             map_window, text="Add Map Data", command=lambda: self.save_map_data(map_window, lat_entry, lon_entry, loc_entry)
         )
         submit_button.pack(pady=10)
+
+    # TODO Rename this here and in `add_map_data`
+    def _extracted_from_add_map_data_7(self, map_window, text):
+        # Latitude Entry
+        lat_label = tk.Label(map_window, text=text)
+        lat_label.pack(pady=5)
+        result = tk.Entry(map_window, width=30)
+        result.pack(pady=5)
+
+        return result
 
     def save_map_data(self, map_window, lat_entry, lon_entry, loc_entry):
         try:
