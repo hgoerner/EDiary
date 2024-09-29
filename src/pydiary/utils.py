@@ -1,7 +1,6 @@
 "util modul"
 
 
-
 def first_util(num1: int, num2: int):
     """Returns the sum of two integers.
 

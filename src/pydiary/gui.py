@@ -71,9 +71,9 @@ class DiaryApp:
         map_window = tk.Toplevel(self.root)
         map_window.title("Add Map Data")
 
-        lat_entry = self._extracted_from_add_map_data_7(map_window, "Latitude:")
-        lon_entry = self._extracted_from_add_map_data_7(map_window, "Longitude:")
-        loc_entry = self._extracted_from_add_map_data_7(map_window, "Location Name:")
+        lat_entry = self._extracted_from_add_map_data(map_window, "Latitude:")
+        lon_entry = self._extracted_from_add_map_data(map_window, "Longitude:")
+        loc_entry = self._extracted_from_add_map_data(map_window, "Location Name:")
         # Submit Button
         submit_button = tk.Button(
             map_window, text="Add Map Data", command=lambda: self.save_map_data(map_window, lat_entry, lon_entry, loc_entry)
@@ -81,7 +81,7 @@ class DiaryApp:
         submit_button.pack(pady=10)
 
     # TODO Rename this here and in `add_map_data`
-    def _extracted_from_add_map_data_7(self, map_window, text):
+    def _extracted_from_add_map_data(self, map_window, text):
         # Latitude Entry
         lat_label = tk.Label(map_window, text=text)
         lat_label.pack(pady=5)
