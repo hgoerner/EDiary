@@ -1,5 +1,5 @@
 
-from osmpkg.utils import first_util
+from pydiary.utils import first_util
 
 
 def test_my_function():
