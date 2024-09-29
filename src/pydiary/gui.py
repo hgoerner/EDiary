@@ -74,29 +74,26 @@ class DiaryApp:
         self.delete_button.pack(pady=5)
 
     def add_picture(self):
-        file_path = filedialog.askopenfilename(
+        if file_path := filedialog.askopenfilename(
             title="Select Picture",
             filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp")],
-        )
-        if file_path:
+        ):
             self.image_path = file_path
             messagebox.showinfo("Picture Selected", f"Picture selected: {os.path.basename(file_path)}")
 
     def add_video(self):
-        file_path = filedialog.askopenfilename(
+        if file_path := filedialog.askopenfilename(
             title="Select Video",
             filetypes=[("Video Files", "*.mp4;*.avi;*.mov;*.mkv")],
-        )
-        if file_path:
+        ):
             self.video_path = file_path
             messagebox.showinfo("Video Selected", f"Video selected: {os.path.basename(file_path)}")
 
     def add_gpx_data(self):
-        file_path = filedialog.askopenfilename(
+        if file_path := filedialog.askopenfilename(
             title="Select GPX File",
             filetypes=[("GPX Files", "*.gpx")],
-        )
-        if file_path:
+        ):
             self.gpx_file = file_path
             messagebox.showinfo("GPX File Selected", f"GPX file selected: {os.path.basename(file_path)}")
 
@@ -105,9 +102,7 @@ class DiaryApp:
         if os.path.exists(self.qmd_file):
             titles = []
             with open(self.qmd_file, "r") as f:
-                for line in f:
-                    if line.startswith("# "):  # Assuming each entry starts with '# Title'
-                        titles.append(line.strip()[2:])  # Strip off the '# ' part
+                titles.extend(line.strip()[2:] for line in f if line.startswith("# "))
             return titles
         return []
 
