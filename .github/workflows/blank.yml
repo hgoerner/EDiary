@@ -23,26 +23,25 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Step 3: Install Xvfb (headless display)
-      - name: Install Xvfb
-        run: sudo apt-get install xvfb
-
-      # Step 4: Start Xvfb (background process)
-      - name: Start Xvfb
-        run: Xvfb :99 &
-
-      # Step 5: Set DISPLAY environment variable for Tkinter to work
-      - name: Set DISPLAY environment variable
-        run: export DISPLAY=:99
-
-      # Step 6: Install dependencies
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
-      # Step 7: Run tests with Xvfb enabled
-      - name: Run pytest
+      # Step 4: Show directory structure (for debugging)
+      - name: Show directory structure
         run: |
-          pytest tests/ --maxfail=5 --disable-warnings -v
+          echo "Showing the directory structure"
+          ls -R
+
+      # Step 5: Show PYTHONPATH and sys.path (for debugging)
+      - name: Show PYTHONPATH and Python sys.path
+        run: |
+          echo "PYTHONPATH: $PYTHONPATH"
+          python -c "import sys; print(sys.path)"
+
+      # Step 6: Run tests with PYTHONPATH
+      - name: Run pytest with PYTHONPATH
+        run: PYTHONPATH=src pytest tests/

@@ -2,13 +2,14 @@ import unittest
 from unittest.mock import patch, MagicMock
 import tkinter as tk
 from pydiary.gui import DiaryApp
-
 class TestDiaryApp(unittest.TestCase):
-    def setUp(self):
-        self.root = tk.Tk()
+    @patch('tkinter.Tk')
+    def setUp(self, mock_tk):
+        self.root = mock_tk()
         self.app = DiaryApp(self.root)
 
-    def tearDown(self):
+    @patch('tkinter.Tk')
+    def tearDown(self, mock_tk):
         self.root.destroy()
 
     @patch('pydiary.gui.filedialog.askopenfilename')
@@ -77,6 +78,24 @@ class TestDiaryApp(unittest.TestCase):
         self.app.edit_entry()
         self.assertEqual(self.app.title_entry.get(), "Test Entry")
         self.assertEqual(self.app.content_text.get("1.0", tk.END).strip(), "Content")
+
+    @patch('pydiary.gui.ttk.Combobox')
+    def test_get_entry_titles(self, mock_combobox):
+        with patch('builtins.open', unittest.mock.mock_open(read_data="# Entry1\n# Entry2\n")):
+            titles = self.app.get_entry_titles()
+            self.assertEqual(titles, ["Entry1", "Entry2"])
+
+    @patch('pydiary.gui.messagebox.showinfo')
+    @patch('pydiary.gui.Entry.save')
+    @patch('pydiary.gui.has_header', return_value=False)
+    @patch('pydiary.gui.add_qmd_header')
+    def test_save_entry_adds_header(self, mock_add_qmd_header, mock_has_header, mock_save, mock_showinfo):
+        self.app.title_entry.insert(0, "Test Title")
+        self.app.content_text.insert("1.0", "Test Content")
+        self.app.save_entry()
+        mock_add_qmd_header.assert_called_once()
+        mock_save.assert_called_once()
+        mock_showinfo.assert_called_with("Success", "Entry 'Test Title' saved successfully!")
 
 if __name__ == '__main__':
     unittest.main()
