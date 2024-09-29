@@ -11,9 +11,6 @@ import os
 import shutil
 
 
-# Basis-Klasse für Einträge
-
-
 class Entry:
     # Class variable to keep track of the last saved date
     last_saved_date = None
