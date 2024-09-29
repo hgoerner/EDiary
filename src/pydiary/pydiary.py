@@ -5,6 +5,7 @@ import folium
 import tkinter as tk
 from tkinter import filedialog
 import csv
+import os
 
 
 # Basis-Klasse für Einträge
@@ -15,12 +16,18 @@ class Entry:
         self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def save(self):
-        filename = f"{self.title}_{self.timestamp}.txt"
+        # Directory to store diary entries
+        directory = "diary_entries"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # Now save the file in that directory
+        filename = f"{directory}/{self.title}.txt"
         with open(filename, "w") as file:
             file.write(f"Title: {self.title}\n")
             file.write(f"Date: {self.timestamp}\n")
             file.write(f"Content:\n{self.content}\n")
-        print(f"Entry '{self.title}' saved successfully.")
+        print(f"Entry '{self.title}' saved successfully in {filename}.")
 
     def display(self):
         print(f"Title: {self.title}")
@@ -54,6 +61,7 @@ class VideoEntry(Entry):
         self.video_path = video_path
 
     def play_video(self):
+        # sourcery skip: remove-unnecessary-else, swap-if-else-branches
         cap = cv2.VideoCapture(self.video_path)
         if not cap.isOpened():
             print(f"Error opening video file {self.video_path}")
@@ -120,8 +128,10 @@ class ImageViewer:
         img = Image.open(file_path)
         img = img.resize((300, 300))  # Bildgröße anpassen
         img_tk = ImageTk.PhotoImage(img)
-        self.label.config(image=img_tk)
-        self.label.image = img_tk
+        self.label.config(image=img_tk) # type: ignore
+        self.label.image = img_tk  # type: ignore # Keep a reference to avoid garbage collection
+        self.label.configure(image=img_tk) # type: ignore
+        self.image_reference = img_tk  # Keep a reference to avoid garbage collection
 
     def run(self):
         button = tk.Button(self.window, text="Open Image", command=self.open_image)
