@@ -26,8 +26,34 @@ class MapEntry {
     + create_map()
 }
 
+class Weather {
+    - api_key: str
+    + get_weather(location: str)
+}
+
+class MainWindow {
+    + show()
+    + close()
+}
+
+class EntryForm {
+    + open()
+    + save_entry()
+}
+
+class EntryListView {
+    + display_entries()
+    + select_entry()
+}
+
 Entry <|-- PictureEntry
 Entry <|-- VideoEntry
 Entry <|-- MapEntry
+
+MainWindow *-- EntryForm
+MainWindow *-- EntryListView
+EntryForm o-- Entry
+EntryListView o-- Entry
+MainWindow *-- Weather
 
 @enduml
