@@ -1,9 +1,6 @@
 import datetime
-from PIL import Image, ImageTk
 import cv2
 import folium
-import tkinter as tk
-from tkinter import filedialog
 import os
 import gpxpy
 import folium
@@ -152,74 +149,3 @@ class MapEntry(Entry):
                 f.write(map_html)
 
         print(f"MapEntry '{self.title}' with GPX file '{self.gpx_file}' saved to {qmd_file}.")
-
-
-# Klasse zur Verwaltung des Tagebuchs
-class TravelDiary:
-    def __init__(self, qmd_file="first_vacation.qmd"):
-        self.entries = []
-        self.qmd_file = qmd_file  # Specify the Quarto file to store entries
-
-    def add_entry(self, entry):
-        self.entries.append(entry)
-        entry.save(self.qmd_file)
-
-    def show_entries(self):
-        for entry in self.entries:
-            entry.display()
-
-
-# GUI für die Bildanzeige (optional)
-class ImageViewer:
-    def __init__(self):
-        self.window = tk.Tk()
-        self.window.title("Travel Diary - Image Viewer")
-        self.label = tk.Label(self.window)
-        self.label.pack()
-
-    def open_image(self):
-        file_path = filedialog.askopenfilename()
-        img = Image.open(file_path)
-        img = img.resize((300, 300))  # Bildgröße anpassen
-        img_tk = ImageTk.PhotoImage(img)
-        self.label.config(image=img_tk)  # type: ignore
-        self.label.image = img_tk  # type: ignore # Keep a reference to avoid garbage collection
-        self.label.configure(image=img_tk)  # type: ignore
-        self.image_reference = img_tk  # Keep a reference to avoid garbage collection
-
-    def run(self):
-        button = tk.Button(self.window, text="Open Image", command=self.open_image)
-        button.pack()
-        self.window.mainloop()
-
-
-# Beispiel für die Verwendung der Klassen
-if __name__ == "__main__":
-    # Tagebuch erstellen
-    diary = TravelDiary()
-
-    # Text-Eintrag erstellen
-    text_entry = Entry("Trip to Paris", "Visited the Eiffel Tower. It was amazing!")
-    diary.add_entry(text_entry)
-
-    # Bild-Eintrag erstellen
-    picture_entry = PictureEntry("Eiffel Tower", "Beautiful day at the Eiffel Tower.", "eiffel_tower.jpg")
-    diary.add_entry(picture_entry)
-    picture_entry.display_image()  # type: ignore
-
-    # Video-Eintrag erstellen
-    video_entry = VideoEntry("Paris Video", "Short clip from the trip.", "paris_video.mp4")
-    diary.add_entry(video_entry)
-    video_entry.play_video()
-
-    # Karten-Eintrag erstellen
-    map_entry = MapEntry("Map of Eiffel Tower", "Location of the Eiffel Tower.", 48.8584, 2.2945, "Eiffel Tower")  # type: ignore
-    diary.add_entry(map_entry)
-    map_entry.create_map()
-
-    # Alle Einträge anzeigen
-    diary.show_entries()
-
-    # Image Viewer starten (optional)
-    # viewer = ImageViewer()
-    # viewer.run()
