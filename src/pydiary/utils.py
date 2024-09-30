@@ -1,5 +1,3 @@
-"util modul"
-
 import os
 
 

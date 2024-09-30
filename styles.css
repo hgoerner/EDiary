@@ -16,3 +16,20 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);  /* Shadow to give it a cutout look */
     border-radius: 10px;                  /* Rounded corners for the cutout */
 }
+
+.weather-info {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.weather-info h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.weather-info ul {
+  list-style: none;
+  padding: 0;
+}

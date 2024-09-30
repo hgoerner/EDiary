@@ -1,0 +1,67 @@
+---
+title: "My Travel Diary"
+format: 
+  html:
+    toc: true  # Enable table of contents for HTML
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true  # Include resources directly in the HTML output
+    css: styles.css  # Link to a custom CSS file
+execute:
+  output: utf-8  # Setze die Ausgabe explizit auf UTF-8
+---
+**Date**: 2024-09-30
+
+# First day
+
+test umlaute üäö
+
+Weather in dresden: 7.45°C, Clear sky
+
+**Date**: 2024-09-30
+
+# bild1
+
+test
+
+Weather in dresden: 7.41°C, Clear sky
+![Weather Icon](http://openweathermap.org/img/wn/01n.png)
+
+**Date**: 2024-09-30
+
+# löälä
+
+("Error fetching weather data: 'function' object has no attribute 'urlopen'", None)
+
+**Date**: 2024-09-30
+
+# kölkö
+
+('Weather in dresden: 7.41°C, Clear sky', <PIL.ImageTk.PhotoImage object at 0x000001A2E4BA7050>)
+
+**Date**: 2024-09-30
+
+# hjkh
+
+Weather in dresden: 7.45°C, Clear sky
+
+**Date**: 2024-09-30
+
+# jlkjl
+
+Weather in dresden: 7.45°C, Clear sky
+
+**Date**: 2024-09-30
+
+# klölö
+
+Weather in aue: 6.85°C, Overcast clouds
+![Weather Icon](http://openweathermap.org/img/wn/04n.png)
+
+**Date**: 2024-09-30
+
+# öäläl
+
+Weather in dresden: 7.45°C, Clear sky
+![Weather Icon](http://openweathermap.org/img/wn/01n.png)
+
