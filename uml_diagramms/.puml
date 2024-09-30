@@ -1,4 +1,5 @@
 @startuml TravelDiary
+skinparam classAttributeIconSize 0
 title Travel Diary UML Diagram
 
 class Entry {
