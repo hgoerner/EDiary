@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pydiary",
-    version="1.0.2",
+    version="1.0.3",
     author="Hendrik Görner",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
