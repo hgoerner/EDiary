@@ -29,7 +29,7 @@ jobs:
       # Step 4: Set up environment variables for API keys
       - name: Set environment variables
         env:
-         OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
         run: echo "Environment variables set"
 
       # Step 5: Run pytest with PYTHONPATH

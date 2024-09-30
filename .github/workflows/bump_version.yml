@@ -1,16 +1,14 @@
 name: Bump Version
 
-# Event triggers: pull requests to 'main' and release published
 on:
-  pull_request:
+  push:
     branches:
       - main
-  release:
-    types: [published]
 
 jobs:
   bump-version:
     runs-on: ubuntu-latest
+
     steps:
       # Checkout the repository
       - name: Checkout Repository
@@ -20,14 +18,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+
+      # Set up Git user (this is the part to add)
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
 
       # Install bump2version
       - name: Install bump2version
         run: |
           pip install bump2version
 
-      # Determine version bump type based on commit message
+      # Determine version bump type based on the commit message
       - name: Set version bump type
         id: version_type
         run: |
@@ -39,7 +43,7 @@ jobs:
             echo "::set-output name=type::patch"
           fi
 
-      # Bump version based on the commit type
+      # Bump the version
       - name: Bump Version
         run: |
           bump2version ${{ steps.version_type.outputs.type }}
