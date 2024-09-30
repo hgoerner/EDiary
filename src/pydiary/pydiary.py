@@ -95,9 +95,6 @@ class VideoEntry(Entry):
         cv2.destroyAllWindows()
 
 
-# Klasse für Karten (Geotagging)
-
-
 class MapEntry(Entry):
     def __init__(self, title, content, gpx_file):
         super().__init__(title, content)
@@ -134,7 +131,10 @@ class MapEntry(Entry):
         m = folium.Map(location=coords[0], zoom_start=12)
 
         # Add the GPX route to the map
-        folium.PolyLine(coords, color="blue", weight=2.5, opacity=1).add_to(m)
+        if len(coords) == 1:
+            folium.Marker(location=coords[0], popup=self.title).add_to(m)
+        else:
+            folium.PolyLine(coords, color="blue", weight=2.5, opacity=1).add_to(m)
 
         return m  # Return the folium map object
 
