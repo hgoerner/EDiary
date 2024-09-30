@@ -44,14 +44,14 @@ class PictureEntry(Entry):
 
     def save(self, qmd_file="my_hiking_diary.qmd"):
         super().save(qmd_file)
-
-        # Ensure the image is copied to the same directory as the .qmd file
-        qmd_dir = os.path.dirname(qmd_file)
+        # Ensure the image is copied to the 'assets/pictures' directory
+        assets_dir = os.path.join(os.path.dirname(qmd_file), "assets", "pictures")
+        os.makedirs(assets_dir, exist_ok=True)
         image_filename = os.path.basename(self.image_path)
-        target_image_path = os.path.join(qmd_dir, image_filename)
+        target_image_path = os.path.join(assets_dir, image_filename)
 
         if not os.path.exists(target_image_path):
-            # Copy the image to the same directory as the .qmd file
+            # Copy the image to the 'assets/pictures' directory
             shutil.copy(self.image_path, target_image_path)
 
         # Write the image and text in a float layout (text to the left or right of the image)
@@ -59,7 +59,7 @@ class PictureEntry(Entry):
             f.write(
                 f'<div style="display: flex; flex-direction: {"row-reverse" if self.align == "right" else "row"}; align-items: center;">\n'
             )
-            f.write(f'<img src="{image_filename}" alt="{self.title}" style="max-width: 50%; height: auto; margin: 10px;">\n')
+            f.write(f'<img src="{target_image_path}" alt="{self.title}" style="max-width: 50%; height: auto; margin: 10px;">\n')
             f.write(f'<p style="max-width: 50%;">{self.content}</p>\n')
             f.write("</div>\n\n")
 

@@ -12,63 +12,12 @@ execute:
 ---
 **Date**: 2024-09-30
 
-# First day
+# Picture1
 
-test umlaute üäö
+nice pic
 
-Weather in dresden: 7.45°C, Clear sky
-
-**Date**: 2024-09-30
-
-# bild1
-
-test
-
-Weather in dresden: 7.41°C, Clear sky
-![Weather Icon](http://openweathermap.org/img/wn/01n.png)
-
-**Date**: 2024-09-30
-
-# löälä
-
-("Error fetching weather data: 'function' object has no attribute 'urlopen'", None)
-
-**Date**: 2024-09-30
-
-# kölkö
-
-('Weather in dresden: 7.41°C, Clear sky', <PIL.ImageTk.PhotoImage object at 0x000001A2E4BA7050>)
-
-**Date**: 2024-09-30
-
-# hjkh
-
-Weather in dresden: 7.45°C, Clear sky
-
-**Date**: 2024-09-30
-
-# jlkjl
-
-Weather in dresden: 7.45°C, Clear sky
-
-**Date**: 2024-09-30
-
-# klölö
-
-Weather in aue: 6.85°C, Overcast clouds
-![Weather Icon](http://openweathermap.org/img/wn/04n.png)
-
-**Date**: 2024-09-30
-
-# öäläl
-
-Weather in dresden: 7.45°C, Clear sky
-![Weather Icon](http://openweathermap.org/img/wn/01n.png)
-
-**Date**: 2024-09-30
-
-# jkljl
-
-Weather in dresden: 7.16°C, Clear sky
-![Weather Icon](http://openweathermap.org/img/wn/01n.png)
+<div style="display: flex; flex-direction: row; align-items: center;">
+<img src="assets\pictures\IMG_20190715_045132.jpg" alt="Picture1" style="max-width: 50%; height: auto; margin: 10px;">
+<p style="max-width: 50%;">nice pic</p>
+</div>
 
