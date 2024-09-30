@@ -1,9 +1,12 @@
 name: Bump Version
 
+# Event triggers: pull requests to 'main' and release published
 on:
-  push:
+  pull_request:
     branches:
       - main
+  release:
+    types: [published]
 
 jobs:
   bump-version:
