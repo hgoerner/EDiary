@@ -1,0 +1,59 @@
+@startuml TravelDiary
+skinparam classAttributeIconSize 0
+title Travel Diary UML Diagram
+
+class Entry {
+    - title: str
+    - content: str
+    + save()
+    + display()
+}
+
+class PictureEntry {
+    - image_path: str
+    + display_image()
+}
+
+class VideoEntry {
+    - video_path: str
+    + play_video()
+}
+
+class MapEntry {
+    - lat: float
+    - lon: float
+    - location_name: str
+    + create_map()
+}
+
+class Weather {
+    - api_key: str
+    + get_weather(location: str)
+}
+
+class MainWindow {
+    + show()
+    + close()
+}
+
+class EntryForm {
+    + open()
+    + save_entry()
+}
+
+class EntryListView {
+    + display_entries()
+    + select_entry()
+}
+
+Entry <|-- PictureEntry
+Entry <|-- VideoEntry
+Entry <|-- MapEntry
+
+MainWindow *-- EntryForm
+MainWindow *-- EntryListView
+EntryForm o-- Entry
+EntryListView o-- Entry
+MainWindow *-- Weather
+
+@enduml

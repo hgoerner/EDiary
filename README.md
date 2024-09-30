@@ -15,24 +15,24 @@ EDiary is a digital diary application designed to help users keep track of their
 ## Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/ediary.git
-    ```
+   ```bash
+   git clone https://github.com/yourusername/ediary.git
+   ```
 2. Navigate to the project directory:
-    ```bash
-    cd ediary
-    ```
+   ```bash
+   cd ediary
+   ```
 3. Install dependencies:
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 ## Usage
 
 1. Start the application:
-    ```bash
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
 2. Open your browser and navigate to `http://localhost:3000`.
 
 ## Contributing

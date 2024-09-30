@@ -1,0 +1,62 @@
+name: Bump Version
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write # Grant write permissions to allow pushing commits and tags
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      # Set up Git user (this is the part to add)
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      # Install bump2version
+      - name: Install bump2version
+        run: |
+          pip install bump2version
+
+      # Determine version bump type based on the commit message
+      - name: Set version bump type
+        id: version_type
+        run: |
+          if [[ "$(git log -1 --pretty=%B)" =~ "breaking" ]]; then
+            echo "::set-output name=type::major"
+          elif [[ "$(git log -1 --pretty=%B)" =~ "feat" ]]; then
+            echo "::set-output name=type::minor"
+          else
+            echo "::set-output name=type::patch"
+          fi
+
+      # Bump the version
+      - name: Bump Version
+        run: |
+          bump2version ${{ steps.version_type.outputs.type }}
+
+      # Push the changes back to the repository
+      - name: Push Changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
+
+      # Push the tags
+      - name: Push Tags
+        run: git push --tags
