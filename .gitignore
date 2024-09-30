@@ -23,3 +23,4 @@ src/pydiary.egg-info/PKG-INFO
 src/pydiary.egg-info/SOURCES.txt
 src/pydiary.egg-info/top_level.txt
 *.egg-info
+/architecture
