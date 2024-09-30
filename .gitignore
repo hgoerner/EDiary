@@ -18,3 +18,7 @@ venv.bak/
 .pytest_cache/
 .venv
 .env
+src/pydiary.egg-info/dependency_links.txt
+src/pydiary.egg-info/PKG-INFO
+src/pydiary.egg-info/SOURCES.txt
+src/pydiary.egg-info/top_level.txt

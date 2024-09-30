@@ -1,6 +1,6 @@
 import unittest
-from pydiary.utils import has_header, add_qmd_header
 import os
+from pydiary.utils import has_header, add_qmd_header
 
 
 class TestUtils(unittest.TestCase):
