@@ -7,11 +7,11 @@ class TestUtils(unittest.TestCase):
 
     def test_has_header(self):
         # Create a temporary .qmd file with a header
-        with open("temp_with_header.qmd", "w") as file:
+        with open("temp_with_header.qmd", "w", encoding="utf-8") as file:
             file.write("---\nheader content\n---\n")
 
         # Create a temporary .qmd file without a header
-        with open("temp_without_header.qmd", "w") as file:
+        with open("temp_without_header.qmd", "w", encoding="utf-8") as file:
             file.write("no header content\n")
 
         self.assertTrue(has_header("temp_with_header.qmd"))
@@ -26,7 +26,7 @@ class TestUtils(unittest.TestCase):
         temp_file = "temp.qmd"
         add_qmd_header(temp_file)
 
-        with open(temp_file, "r") as file:
+        with open(temp_file, "r", encoding="utf-8") as file:
             content = file.read()
 
         expected_header = """---

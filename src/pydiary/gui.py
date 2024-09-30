@@ -1,14 +1,30 @@
-import tkinter as tk
-from tkinter import messagebox, filedialog, ttk
-from pydiary.pydiary import Entry, PictureEntry, VideoEntry, MapEntry
 import os
-from pydiary.utils import has_header, add_qmd_header
+import requests
+import tkinter as tk
+from tkinter import filedialog, messagebox, simpledialog, ttk
+
+from dotenv import load_dotenv
+from pydiary.pydiary import Entry, MapEntry, PictureEntry, VideoEntry
+from pydiary.utils import add_qmd_header, has_header
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class DiaryApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Travel Diary")
+        # Load environment variables from .env file
+        self.api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+        print(self.api_key)
+
+        if self.api_key is None:
+            raise ValueError(
+                "API key not found! Make sure it's set as an environment variable with -setx OPENWEATHERMAP_API_KEY ~your_actual_api_key~"
+            )
+
+        self.city_name = None
 
         # Initialize variables
         self.entries = []  # Store entries
@@ -60,6 +76,10 @@ class DiaryApp:
         self.save_button = tk.Button(root, text="Save Entry", command=self.save_entry)
         self.save_button.pack(pady=20)
 
+        # Add Weather Button
+        self.add_weather_button = tk.Button(self.buttons_frame, text="Fetch Weather", command=self.add_weather)
+        self.add_weather_button.grid(row=0, column=3, padx=5)
+
         # Dropdown for selecting an entry
         self.entry_selection_label = tk.Label(root, text="Select an Entry:")
         self.entry_selection_label.pack(pady=5)
@@ -72,6 +92,47 @@ class DiaryApp:
         self.edit_button.pack(pady=5)
         self.delete_button = tk.Button(root, text="Delete Entry", command=self.delete_entry)
         self.delete_button.pack(pady=5)
+
+    def get_weather(self, city_name):
+        """Fetch weather data including temperature, description, and icon URL."""
+        try:
+            # Fetch weather data
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric"
+            response = requests.get(url)
+            weather_data = response.json()
+
+            if response.status_code != 200:
+                return f"Error: {weather_data['message']}" if weather_data.get("message") else "Weather data could not be fetched."
+
+            # Extract temperature, description, and icon code
+            temp = weather_data["main"]["temp"]
+            desc = weather_data["weather"][0]["description"].capitalize()
+            icon_code = weather_data["weather"][0]["icon"]
+
+            # Construct the icon URL
+            icon_url = f"http://openweathermap.org/img/wn/{icon_code}.png"
+
+            # Format the weather information
+            weather_info = f"Weather in {city_name}: {temp}°C, {desc}\n"
+            weather_info += f"![Weather Icon]({icon_url})"  # Markdown format for embedding images
+
+            return weather_info
+
+        except Exception as e:
+            return f"Error fetching weather data: {str(e)}"
+
+    def add_weather(self):
+        """Prompt the user to enter a city name, then fetch weather data."""
+        if city_name := simpledialog.askstring("City Name", "Enter the name of the city:"):
+            # Fetch weather data and the icon image
+            weather_info = self.get_weather(city_name)
+
+            # Insert the weather info into the text box (only the text)
+            self.content_text.insert(tk.END, f"\n\n{weather_info}\n")
+
+            messagebox.showinfo("Weather Added", f"Weather data for {city_name} added.")
+        else:
+            messagebox.showerror("Error", "City name is required.")
 
     def add_picture(self):
         if file_path := filedialog.askopenfilename(
@@ -101,7 +162,7 @@ class DiaryApp:
         # Read entries from the QMD file and return a list of entry titles
         if os.path.exists(self.qmd_file):
             titles = []
-            with open(self.qmd_file, "r") as f:
+            with open(self.qmd_file, "r", encoding="utf-8") as f:
                 titles.extend(line.strip()[2:] for line in f if line.startswith("# "))
             return titles
         return []
@@ -162,7 +223,7 @@ class DiaryApp:
                 if not skip:
                     new_content.append(line)
 
-        with open(self.qmd_file, "w") as f:
+        with open(self.qmd_file, "w", encoding="utf-8") as f:
             f.writelines(new_content)
 
         # Update the dropdown
@@ -197,8 +258,6 @@ class DiaryApp:
             self.content_text.insert("1.0", "".join(content))
         else:
             messagebox.showerror("Error", f"Entry '{selected_entry}' not found!")
-
-    # Main GUI
 
 
 def run_gui():
