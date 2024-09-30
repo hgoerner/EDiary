@@ -1,0 +1,32 @@
+@startuml TravelDiary
+title Travel Diary UML Diagram
+
+class Entry {
+    - title: str
+    - content: str
+    + save()
+    + display()
+}
+
+class PictureEntry {
+    - image_path: str
+    + display_image()
+}
+
+class VideoEntry {
+    - video_path: str
+    + play_video()
+}
+
+class MapEntry {
+    - lat: float
+    - lon: float
+    - location_name: str
+    + create_map()
+}
+
+Entry <|-- PictureEntry
+Entry <|-- VideoEntry
+Entry <|-- MapEntry
+
+@enduml
