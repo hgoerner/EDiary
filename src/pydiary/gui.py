@@ -3,8 +3,12 @@ import requests
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
 
+from dotenv import load_dotenv
 from pydiary.pydiary import Entry, MapEntry, PictureEntry, VideoEntry
 from pydiary.utils import add_qmd_header, has_header
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class DiaryApp:
@@ -12,7 +16,8 @@ class DiaryApp:
         self.root = root
         self.root.title("Travel Diary")
         # Load environment variables from .env file
-        self.api_key = "9f548b05df513f03b9295e7abff9f41a"
+        self.api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+        print(self.api_key)
 
         if self.api_key is None:
             raise ValueError(

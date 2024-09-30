@@ -13,45 +13,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Python environment
       - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
 
-      # Step 4: Show directory structure (for debugging)
-      - name: Show directory structure
-        run: |
-          echo "Showing the directory structure"
-          ls -R
-
-      # Step 5: Show PYTHONPATH and sys.path (for debugging)
-      - name: Show PYTHONPATH and Python sys.path
-        run: |
-          echo "PYTHONPATH before: $PYTHONPATH"
-          python -c "import sys; print('sys.path:', sys.path)"
-
-      # Step 6: Set PYTHONPATH and run tests
-      - name: Run pytest with PYTHONPATH
+      # Step 4: Set up environment variables for API keys
+      - name: Set environment variables
         env:
-          PYTHONPATH: src  # Set PYTHONPATH for this step
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}  # Access GitHub Secret
+        run: echo "Environment variables set"
+
+      # Step 5: Run pytest with PYTHONPATH
+      - name: Run pytest
+        env:
+          PYTHONPATH: src
         run: |
-          echo "Running tests with PYTHONPATH=$PYTHONPATH"
           pytest tests/
-
-      # Optional: Step 7: Collect coverage (if using pytest-cov)
-      - name: Run pytest with coverage
-        if: always()  # Run even if previous steps fail
-        env:
-          PYTHONPATH: src  # Set PYTHONPATH
-        run: |
-          pytest --cov=src tests/
