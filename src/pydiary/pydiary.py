@@ -43,7 +43,7 @@ class PictureEntry(Entry):
         self.align = align  # 'left' or 'right'
 
     def save(self, qmd_file="my_hiking_diary.qmd"):
-        super().save(qmd_file)
+        # super().save(qmd_file)
         # Ensure the image is copied to the 'assets/pictures' directory
         assets_dir = os.path.join(os.path.dirname(qmd_file), "assets", "pictures")
         os.makedirs(assets_dir, exist_ok=True)
@@ -56,6 +56,7 @@ class PictureEntry(Entry):
 
         # Write the image and text in a float layout (text to the left or right of the image)
         with open(qmd_file, "a", encoding="utf-8") as f:
+            f.write(f"# {self.title}\n\n")
             f.write(
                 f'<div style="display: flex; flex-direction: {"row-reverse" if self.align == "right" else "row"}; align-items: center;">\n'
             )
